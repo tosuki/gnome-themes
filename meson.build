@@ -5,6 +5,7 @@ project('gnome-themes-manager', 'c',
 # Dependências
 glib_dep = dependency('glib-2.0')
 gio_dep = dependency('gio-2.0')
+archive_dep = dependency('libarchive')
 
 # Incluir diretórios
 inc = include_directories('include')
@@ -19,6 +20,6 @@ sources = [
 executable('gtm',
   sources,
   include_directories : inc,
-  dependencies : [glib_dep, gio_dep],
+  dependencies : [glib_dep, gio_dep, archive_dep],
   install : true
 )

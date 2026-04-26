@@ -39,6 +39,11 @@ Este arquivo serve como o registro de memória do projeto, conforme definido no 
     - Organizar membros de structs do maior para o menor para reduzir o padding implícito do compilador.
 - **Consequência:** Garante que as estruturas caibam em chunks de leitura únicos da CPU, evitando acessos desalinhados que degradam a performance.
 
+### 005: Uso de Libarchive para Backup
+- **Contexto:** Necessidade de criar um backup comprimido contendo múltiplos arquivos e diretórios.
+- **Decisão:** Utilizar a biblioteca `libarchive` em vez de chamadas de sistema (tar/zip).
+- **Consequência:** Permite maior controle sobre o processo de arquivamento, tratamento de erros granular via bitmask e portabilidade sem depender de utilitários externos.
+
 ## Próximos Passos
 1. Criar a estrutura básica de diretórios do projeto (`src/`, `include/`).
 2. Configurar o arquivo `meson.build` inicial.

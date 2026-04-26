@@ -18,18 +18,18 @@ fi
 install_fedora() {
     echo "📦 Instalando dependências no Fedora..."
     sudo dnf groupinstall -y "Development Tools"
-    sudo dnf install -y meson ninja-build glib2-devel ncurses-devel zlib-devel
+    sudo dnf install -y meson ninja-build glib2-devel ncurses-devel zlib libarchive-devel libarchive-devel
 }
 
 install_ubuntu() {
     echo "📦 Instalando dependências no Ubuntu/Debian..."
     sudo apt update
-    sudo apt install -y build-essential meson ninja-build libglib2.0-dev libncurses5-dev zlib1g-dev
+    sudo apt install -y build-essential meson ninja-build libglib2.0-dev libncurses5-dev zlib libarchive1g-dev libarchive-dev
 }
 
 install_arch() {
     echo "📦 Instalando dependências no Arch Linux..."
-    sudo pacman -Syu --needed --noconfirm base-devel meson ninja glib2 ncurses zlib
+    sudo pacman -Syu --needed --noconfirm base-devel meson ninja glib2 ncurses zlib libarchive
 }
 
 case $OS in
@@ -44,7 +44,7 @@ case $OS in
         ;;
     *)
         echo "⚠️  Distribuição '$OS' não suportada automaticamente."
-        echo "Por favor, instale manualmente: meson, ninja, glib2, ncurses, zlib"
+        echo "Por favor, instale manualmente: meson, ninja, glib2, ncurses, zlib libarchive"
         exit 1
         ;;
 esac
