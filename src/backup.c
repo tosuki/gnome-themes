@@ -1,3 +1,4 @@
+#define _DEFAULT_SOURCE
 #include <archive.h>
 #include <archive_entry.h>
 #include <fcntl.h>

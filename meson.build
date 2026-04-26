@@ -26,3 +26,18 @@ executable('gtm',
   dependencies : [glib_dep, gio_dep, archive_dep, ncurses_dep],
   install : true
 )
+
+# Testes
+test_sources = [
+  'tests/test_manager.c',
+  'src/gnome_config.c',
+  'src/backup.c'
+]
+
+test_exe = executable('test_gtm',
+  test_sources,
+  include_directories : inc,
+  dependencies : [glib_dep, gio_dep, archive_dep]
+)
+
+test('gtm_unit_tests', test_exe)
