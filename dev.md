@@ -14,16 +14,19 @@ Este arquivo serve como o registro de memória do projeto, conforme definido no 
 - [x] Implementação do gerenciamento de Keybindings (Sistema e Personalizados).
 - [x] Refinamento do Explorador de Arquivos interativo.
 - [x] Suporte a cores dinâmicas na TUI baseadas no esquema de cores do sistema.
+- [ ] Planejamento e Scaffolding da interface gráfica GTK4/Libadwaita.
 
 ## Decisões de Arquitetura (ADR)
 
 ... (omitido para brevidade, mas mantido no arquivo real) ...
 
-### 009: Cores ANSI Dinâmicas via GSettings
-- **Contexto:** Necessidade de alinhar a estética da TUI com a preferência de cor do usuário (Dark/Light).
-- **Decisão:** Consultar `org.gnome.desktop.interface color-scheme` e redefinir os pares de cores do ncurses em tempo de execução.
-- **Consequência:** A interface se adapta visualmente, oferecendo um contraste melhor e uma experiência mais integrada ao sistema.
+### 010: Transição para GTK4 e Libadwaita
+- **Contexto:** Necessidade de uma interface gráfica moderna que siga as diretrizes do GNOME (HIG).
+- **Decisão:** Utilizar GTK4 como toolkit e Libadwaita para componentes de UI específicos do GNOME.
+- **Consequência:** A aplicação terá um visual "oficial" do GNOME, suporte nativo a temas (claro/escuro) e será adaptável para diferentes tamanhos de tela. O motor lógico (backup/restauração) permanecerá desacoplado da interface.
 
 ## Próximos Passos
-1. Documentação final e limpeza de avisos de compilação.
-2. Testes de integração em diferentes distribuições.
+1. Atualizar o `setup_deps.sh` para incluir `libadwaita-devel`.
+2. Criar o protótipo da janela principal em GTK4.
+3. Implementar o sistema de "Dual Interface" (TUI e GUI coexistindo no mesmo binário ou binários separados).
+4. Integrar os sinais do GTK com a lógica de backup/restauração já existente.

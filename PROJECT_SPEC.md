@@ -20,13 +20,23 @@ A primeira versão da aplicação deve ser capaz de identificar e gerenciar as s
 - [ ] **Ponto de Restauração:** Criar um backup automático da configuração atual antes de aplicar qualquer alteração vinda de um arquivo recuperado.
 
 ### Interface (TUI)
-- [ ] Navegação intuitiva via teclado.
-- [ ] **Dashboard:** Tela para visualizar a configuração ativa com detalhes de caminhos e versões.
+- [x] Navegação intuitiva via teclado.
+- [x] **Dashboard:** Tela para visualizar a configuração ativa com detalhes de caminhos e versões.
 - [x] **Preview Visual:** Utilizar cores ANSI para representar a paleta do tema atual na interface.
-- [ ] **Explorador de Arquivos:** Interface interativa para navegar e selecionar o arquivo de backup para restauração.
+- [x] **Explorador de Arquivos:** Interface interativa para navegar e selecionar o arquivo de backup para restauração.
 - [ ] **Confirmação (Dry Run):** Listar todas as alterações que serão feitas antes de efetivá-las no sistema.
 
+### Interface Gráfica (GUI) - Padrão GNOME/Libadwaita
+- [ ] **Arquitetura:** Implementação em GTK4 e Libadwaita para garantir visual nativo e adaptividade (Mobile-friendly).
+- [ ] **Janela Principal (AdwWindow):** Utilizar `AdwHeaderBar` e `AdwViewStack` para alternar entre as abas de Dashboard e Histórico/Backup.
+- [ ] **Páginas de Status:** Usar `AdwStatusPage` para telas de boas-vindas ou estados vazios.
+- [ ] **Cards Interativos:** Exibir configurações atuais em `AdwActionRow` dentro de `AdwPreferencesGroup`.
+- [ ] **Diálogos Nativos:** Utilizar `GtkFileChooserNative` para seleção de backups e `AdwMessageDialog` para confirmações de restauração.
+- [ ] **Feedback Visual:** Implementar `AdwToast` para notificações de sucesso/erro (ex: "Backup concluído").
+- [ ] **Modo Adaptativo:** A interface deve se ajustar automaticamente a diferentes tamanhos de janela.
+
 ## Requisitos Funcionais e Técnicos
+
 
 - **Linguagem:** C (Padrão C11 ou superior).
 - **Integração GNOME:** Utilizar as bibliotecas `GLib` e `GIO` para manipulação de `GSettings` e `dconf`.
