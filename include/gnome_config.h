@@ -23,4 +23,14 @@ Result get_gnome_wallpaper(char **path);
  */
 Result get_gnome_themes(char **gtk_theme, char **icon_theme, char **cursor_theme, int *cursor_size);
 
+/**
+ * @brief Obtém as fontes atuais do sistema.
+ */
+Result get_gnome_fonts(char **interface, char **document, char **monospace, char **title);
+
+/**
+ * @brief Obtém preferências de interface (ex: color-scheme).
+ */
+Result get_gnome_preferences(char **color_scheme);
+
 #endif // GNOME_CONFIG_H

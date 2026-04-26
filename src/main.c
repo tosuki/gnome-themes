@@ -35,5 +35,19 @@ int main(int argc, char *argv[]) {
         printf("Erro ao detectar temas: Mask 0x%X\n", res.mask);
     }
 
+    char *f_iface = NULL, *f_doc = NULL, *f_mono = NULL, *f_title = NULL;
+    res = get_gnome_fonts(&f_iface, &f_doc, &f_mono, &f_title);
+    if (res.mask == SUCCESS) {
+        printf("Fontes: Interface(%s), Doc(%s), Mono(%s), Title(%s)\n", f_iface, f_doc, f_mono, f_title);
+        g_free(f_iface); g_free(f_doc); g_free(f_mono); g_free(f_title);
+    }
+
+    char *scheme = NULL;
+    res = get_gnome_preferences(&scheme);
+    if (res.mask == SUCCESS) {
+        printf("Esquema de cores: %s\n", scheme);
+        g_free(scheme);
+    }
+
     return 0;
 }
