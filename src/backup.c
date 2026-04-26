@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include "backup.h"
 #include "gnome_config.h"
+#include "keybindings.h"
 
 static Result add_file_to_archive(struct archive *a, const char *path, const char *name_in_archive) {
     Result res = { .timestamp = (uint64_t)g_get_real_time(), .mask = SUCCESS };
@@ -98,6 +99,24 @@ Result create_gnome_backup(const char *output_file) {
     archive_write_data(a, config_data, strlen(config_data));
     archive_entry_free(entry);
     g_free(config_data);
+
+    // Exportar Keybindings
+    GKeyFile *kb_file = g_key_file_new();
+    export_gnome_keybindings(kb_file);
+    gsize kb_len;
+    char *kb_data = g_key_file_to_data(kb_file, &kb_len, NULL);
+    
+    struct archive_entry *kb_entry = archive_entry_new();
+    archive_entry_set_pathname(kb_entry, "keybindings.conf");
+    archive_entry_set_size(kb_entry, kb_len);
+    archive_entry_set_filetype(kb_entry, AE_IFREG);
+    archive_entry_set_perm(kb_entry, 0644);
+    archive_write_header(a, kb_entry);
+    archive_write_data(a, kb_data, kb_len);
+    archive_entry_free(kb_entry);
+    
+    g_free(kb_data);
+    g_key_file_free(kb_file);
 
     char *path = NULL;
     if (gtk && find_asset_path(gtk, "themes", &path).mask == SUCCESS) {

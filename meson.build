@@ -16,7 +16,8 @@ sources = [
   'src/main.c',
   'src/gnome_config.c',
   'src/backup.c',
-  'src/tui.c'
+  'src/tui.c',
+  'src/keybindings.c'
 ]
 
 # Executável
@@ -31,7 +32,8 @@ executable('gtm',
 test_sources = [
   'tests/test_manager.c',
   'src/gnome_config.c',
-  'src/backup.c'
+  'src/backup.c',
+  'src/keybindings.c'
 ]
 
 test_exe = executable('test_gtm',

@@ -51,7 +51,6 @@ Este arquivo serve como o registro de memória do projeto, conforme definido no 
 - **Consequência:** Facilita a serialização de arrays de strings e metadados de atalhos personalizados, mantendo a compatibilidade com o sistema de restauração.
 
 ## Próximos Passos
-1. Implementar coleta de Keybindings do sistema.
-2. Implementar iteração e coleta de Keybindings personalizados.
-3. Integrar no fluxo de Backup/Restauração.
-4. Refinar o **Explorador de Arquivos** para permitir navegação real por diretórios.
+1. Implementar aplicação (importação) das Keybindings restauradas.
+2. Integrar no fluxo de Restauração.
+3. Refinar o **Explorador de Arquivos** para permitir navegação real por diretórios.
