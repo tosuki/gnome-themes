@@ -7,6 +7,33 @@
 #include "tui.h"
 #include "gnome_config.h"
 
+static void setup_dynamic_colors(void) {
+    char *scheme = NULL;
+    get_gnome_preferences(&scheme);
+    
+    bool is_dark = true;
+    if (scheme && strcmp(scheme, "prefer-light") == 0) {
+        is_dark = false;
+    }
+
+    if (is_dark) {
+        init_pair(1, COLOR_CYAN, COLOR_BLACK);   // Títulos
+        init_pair(2, COLOR_GREEN, COLOR_BLACK);  // Seleção
+        init_pair(3, COLOR_WHITE, COLOR_BLACK);  // Texto normal
+        init_pair(4, COLOR_RED, COLOR_BLACK);    // Erros
+        init_pair(5, COLOR_YELLOW, COLOR_BLACK); // Diretórios
+    } else {
+        // Esquema para terminal claro
+        init_pair(1, COLOR_BLUE, COLOR_WHITE);
+        init_pair(2, COLOR_GREEN, COLOR_WHITE);
+        init_pair(3, COLOR_BLACK, COLOR_WHITE);
+        init_pair(4, COLOR_RED, COLOR_WHITE);
+        init_pair(5, COLOR_MAGENTA, COLOR_WHITE);
+        bkgd(COLOR_PAIR(3));
+    }
+    g_free(scheme);
+}
+
 void init_tui(void) {
     initscr();
     raw();
@@ -14,12 +41,7 @@ void init_tui(void) {
     noecho();
     curs_set(0);
     start_color();
-    
-    init_pair(1, COLOR_CYAN, COLOR_BLACK);   // Títulos
-    init_pair(2, COLOR_GREEN, COLOR_BLACK);  // Seleção
-    init_pair(3, COLOR_WHITE, COLOR_BLACK);  // Texto normal
-    init_pair(4, COLOR_RED, COLOR_BLACK);    // Erros
-    init_pair(5, COLOR_YELLOW, COLOR_BLACK); // Diretórios
+    setup_dynamic_colors();
 }
 
 void close_tui(void) {
@@ -65,12 +87,10 @@ int run_main_menu(void) {
         c = getch();
         switch (c) {
             case KEY_UP:
-                if (highlight == 1) highlight = n_choices;
-                else highlight--;
+                highlight = (highlight == 1) ? n_choices : highlight - 1;
                 break;
             case KEY_DOWN:
-                if (highlight == n_choices) highlight = 1;
-                else highlight++;
+                highlight = (highlight == n_choices) ? 1 : highlight + 1;
                 break;
             case 10: // Enter
                 return highlight;
@@ -96,7 +116,15 @@ void show_dashboard(void) {
     mvprintw(7, 4, "Cursor:     %s (tamanho %d)", cursor ? cursor : "N/A", c_size);
     attroff(COLOR_PAIR(3));
 
-    mvprintw(10, 2, "Pressione qualquer tecla para voltar...");
+    // Preview Visual (ANSI Colors)
+    mvprintw(9, 4, "Preview do Tema:");
+    for (int i = 1; i <= 5; i++) {
+        attron(COLOR_PAIR(i));
+        mvprintw(10, 4 + (i * 4), " ■■ ");
+        attroff(COLOR_PAIR(i));
+    }
+
+    mvprintw(13, 2, "Pressione qualquer tecla para voltar...");
     
     g_free(gtk); g_free(icons); g_free(cursor); g_free(wallpaper);
     refresh();
@@ -127,7 +155,6 @@ char* run_file_explorer(void) {
         FileEntry entries[256];
         int n_entries = 0;
         
-        // Adicionar opção de voltar
         entries[n_entries].name = strdup("..");
         entries[n_entries].is_dir = true;
         n_entries++;
@@ -136,7 +163,6 @@ char* run_file_explorer(void) {
         while ((entry = readdir(dir)) != NULL && n_entries < 256) {
             if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) continue;
             
-            // Filtro: apenas pastas ou arquivos .tar.gz
             bool is_dir = (entry->d_type == DT_DIR);
             if (is_dir || g_str_has_suffix(entry->d_name, ".tar.gz")) {
                 entries[n_entries].name = strdup(entry->d_name);
@@ -181,7 +207,7 @@ char* run_file_explorer(void) {
                             free(real_path);
                         }
                         g_free(new_path);
-                        selected = true; // Sair do loop interno para recarregar diretório
+                        selected = true;
                     } else {
                         char *result = g_build_filename(current_path, entries[highlight - 1].name, NULL);
                         for (int i = 0; i < n_entries; i++) free(entries[i].name);

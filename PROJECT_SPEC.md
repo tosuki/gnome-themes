@@ -22,7 +22,7 @@ A primeira versão da aplicação deve ser capaz de identificar e gerenciar as s
 ### Interface (TUI)
 - [ ] Navegação intuitiva via teclado.
 - [ ] **Dashboard:** Tela para visualizar a configuração ativa com detalhes de caminhos e versões.
-- [ ] **Preview Visual:** Utilizar cores ANSI para representar a paleta do tema atual na interface.
+- [x] **Preview Visual:** Utilizar cores ANSI para representar a paleta do tema atual na interface.
 - [ ] **Explorador de Arquivos:** Interface interativa para navegar e selecionar o arquivo de backup para restauração.
 - [ ] **Confirmação (Dry Run):** Listar todas as alterações que serão feitas antes de efetivá-las no sistema.
 
