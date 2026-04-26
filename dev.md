@@ -11,6 +11,7 @@ Este arquivo serve como o registro de memória do projeto, conforme definido no 
 - [x] Implementação da lógica de backup (Libarchive + Gzip).
 - [x] Implementação da lógica de restauração e extração inteligente.
 - [x] Desenvolvimento da interface TUI (Ncurses).
+- [ ] Implementação do gerenciamento de Keybindings (Sistema e Personalizados).
 
 ## Decisões de Arquitetura (ADR)
 
@@ -44,8 +45,13 @@ Este arquivo serve como o registro de memória do projeto, conforme definido no 
 - **Decisão:** Utilizar `ncurses` com sistema de cores e captura de teclado raw.
 - **Consequência:** Interface leve, rápida e compatível com sessões SSH.
 
+### 007: Armazenamento de Keybindings em formato GKeyFile
+- **Contexto:** Atalhos de teclado personalizados possuem estruturas dinâmicas e listas de caminhos.
+- **Decisão:** Exportar os atalhos para um arquivo `keybindings.conf` dentro do backup usando a estrutura de `GKeyFile`.
+- **Consequência:** Facilita a serialização de arrays de strings e metadados de atalhos personalizados, mantendo a compatibilidade com o sistema de restauração.
+
 ## Próximos Passos
-1. Refinar o **Explorador de Arquivos** para permitir navegação real por diretórios.
-2. Implementar o **Ponto de Restauração** automático (backup de segurança antes da restauração).
-3. Adicionar suporte a cores ANSI dinâmicas na TUI para representar o tema atual.
-4. Documentação final e limpeza de avisos de compilação.
+1. Implementar coleta de Keybindings do sistema.
+2. Implementar iteração e coleta de Keybindings personalizados.
+3. Integrar no fluxo de Backup/Restauração.
+4. Refinar o **Explorador de Arquivos** para permitir navegação real por diretórios.

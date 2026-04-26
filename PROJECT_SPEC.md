@@ -10,6 +10,7 @@ A primeira versão da aplicação deve ser capaz de identificar e gerenciar as s
 - [ ] **GNOME Shell:** Identificar o tema aplicado à interface do Shell.
 - [ ] **Fontes:** Capturar as configurações de fontes (Interface, Documentos, Monoespaçada e Títulos).
 - [ ] **Preferência de Cor:** Identificar se o sistema está em modo Dark ou Light.
+- [ ] **Keybindings:** Identificar e gerenciar atalhos de teclado do sistema e personalizados.
 - [ ] **Extensões:** Listar as extensões que estão ativas no momento.
 
 ### Gerenciamento de Backup e Restauração

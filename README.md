@@ -6,7 +6,7 @@ Ao contrário de outras ferramentas que salvam apenas nomes de configurações, 
 
 ## ✨ Funcionalidades
 
-- **Backup Completo:** Identifica e comprime Wallpaper, Tema GTK, Ícones, Cursor, Fontes e Esquema de Cores.
+- **Backup Completo:** Identifica e comprime Wallpaper, Tema GTK, Ícones, Cursor, Fontes, Keybindings e Esquema de Cores.
 - **Restauração Inteligente:** Detecta se um tema original era global e, caso não exista no destino, instala-o localmente para o usuário (`~/.themes` ou `~/.local/share/icons`).
 - **Ponto de Restauração Automático:** Cria um backup de segurança da configuração atual antes de aplicar qualquer restauração.
 - **Interface TUI:** Navegação intuitiva via teclado utilizando `ncurses`.
