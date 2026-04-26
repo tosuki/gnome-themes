@@ -11,7 +11,7 @@ Este arquivo serve como o registro de memória do projeto, conforme definido no 
 - [x] Implementação da lógica de backup (Libarchive + Gzip).
 - [x] Implementação da lógica de restauração e extração inteligente.
 - [x] Desenvolvimento da interface TUI (Ncurses).
-- [ ] Implementação do gerenciamento de Keybindings (Sistema e Personalizados).
+- [x] Implementação do gerenciamento de Keybindings (Sistema e Personalizados).
 
 ## Decisões de Arquitetura (ADR)
 
@@ -51,6 +51,6 @@ Este arquivo serve como o registro de memória do projeto, conforme definido no 
 - **Consequência:** Facilita a serialização de arrays de strings e metadados de atalhos personalizados, mantendo a compatibilidade com o sistema de restauração.
 
 ## Próximos Passos
-1. Implementar aplicação (importação) das Keybindings restauradas.
-2. Integrar no fluxo de Restauração.
-3. Refinar o **Explorador de Arquivos** para permitir navegação real por diretórios.
+1. Refinar o **Explorador de Arquivos** para permitir navegação real por diretórios.
+2. Adicionar suporte a cores ANSI dinâmicas na TUI para representar o tema atual.
+3. Documentação final e limpeza de avisos de compilação.

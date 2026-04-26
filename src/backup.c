@@ -169,6 +169,8 @@ Result restore_gnome_backup(const char *input_file) {
 
     struct archive_entry *entry;
     char *manifest_content = NULL;
+    char *keybindings_content = NULL;
+    size_t keybindings_size = 0;
     const char *user_home = g_get_home_dir();
 
     // Primeira passada ou busca direta pelo manifest e extração seletiva
@@ -180,6 +182,10 @@ Result restore_gnome_backup(const char *input_file) {
             manifest_content = g_malloc(size + 1);
             archive_read_data(a, manifest_content, size);
             manifest_content[size] = '\0';
+        } else if (strcmp(pathname, "keybindings.conf") == 0) {
+            keybindings_size = archive_entry_size(entry);
+            keybindings_content = g_malloc(keybindings_size);
+            archive_read_data(a, keybindings_content, keybindings_size);
         } else {
             // Determinar destino da extração
             char *dest_path = NULL;
@@ -224,6 +230,15 @@ Result restore_gnome_backup(const char *input_file) {
         g_free(dummy_manifest);
         g_key_file_free(kf);
         g_free(manifest_content);
+    }
+
+    if (keybindings_content) {
+        GKeyFile *kf = g_key_file_new();
+        if (g_key_file_load_from_data(kf, keybindings_content, keybindings_size, G_KEY_FILE_NONE, NULL)) {
+            import_gnome_keybindings(kf);
+        }
+        g_key_file_free(kf);
+        g_free(keybindings_content);
     }
 
     archive_read_close(a);
