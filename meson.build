@@ -11,7 +11,8 @@ inc = include_directories('include')
 
 # Arquivos fonte
 sources = [
-  'src/main.c'
+  'src/main.c',
+  'src/gnome_config.c'
 ]
 
 # Executável
