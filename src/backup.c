@@ -126,3 +126,88 @@ Result create_gnome_backup(const char *output_file) {
     archive_write_free(a);
     return res;
 }
+
+static void apply_gsettings(const char *schema, const char *key, const char *value) {
+    if (!value || strlen(value) == 0) return;
+    GSettings *settings = g_settings_new(schema);
+    if (settings) {
+        g_settings_set_string(settings, key, value);
+        g_object_unref(settings);
+    }
+}
+
+Result restore_gnome_backup(const char *input_file) {
+    Result res = { .timestamp = (uint64_t)g_get_real_time(), .mask = SUCCESS };
+    struct archive *a = archive_read_new();
+    archive_read_support_filter_gzip(a);
+    archive_read_support_format_tar(a);
+
+    if (archive_read_open_filename(a, input_file, 10240) != ARCHIVE_OK) {
+        res.mask |= ERR_FILESYSTEM;
+        archive_read_free(a);
+        return res;
+    }
+
+    struct archive_entry *entry;
+    char *manifest_content = NULL;
+    const char *user_home = g_get_home_dir();
+
+    // Primeira passada ou busca direta pelo manifest e extração seletiva
+    while (archive_read_next_header(a, &entry) == ARCHIVE_OK) {
+        const char *pathname = archive_entry_pathname(entry);
+        
+        if (strcmp(pathname, "manifest.conf") == 0) {
+            size_t size = archive_entry_size(entry);
+            manifest_content = g_malloc(size + 1);
+            archive_read_data(a, manifest_content, size);
+            manifest_content[size] = '\0';
+        } else {
+            // Determinar destino da extração
+            char *dest_path = NULL;
+            if (g_str_has_prefix(pathname, "themes/")) {
+                dest_path = g_build_filename(user_home, ".themes", pathname + 7, NULL);
+            } else if (g_str_has_prefix(pathname, "icons/")) {
+                dest_path = g_build_filename(user_home, ".local", "share", "icons", pathname + 6, NULL);
+            } else if (g_str_has_prefix(pathname, "cursor/")) {
+                dest_path = g_build_filename(user_home, ".local", "share", "icons", pathname + 7, NULL);
+            } else if (strcmp(pathname, "wallpaper.img") == 0) {
+                dest_path = g_build_filename(user_home, ".local", "share", "backgrounds", "restored_wallpaper.img", NULL);
+            }
+
+            if (dest_path) {
+                // Criar diretórios pai
+                char *dirname = g_path_get_dirname(dest_path);
+                g_mkdir_with_parents(dirname, 0755);
+                g_free(dirname);
+
+                // Extrair arquivo
+                archive_entry_set_pathname(entry, dest_path);
+                archive_read_extract(a, entry, ARCHIVE_EXTRACT_TIME | ARCHIVE_EXTRACT_PERM | ARCHIVE_EXTRACT_ACL | ARCHIVE_EXTRACT_FFLAGS);
+                g_free(dest_path);
+            }
+        }
+    }
+
+    // Aplicar configurações do manifest
+    if (manifest_content) {
+        GKeyFile *kf = g_key_file_new();
+        // Adicionar um cabeçalho fictício para o GKeyFile funcionar com formato key=value simples
+        char *dummy_manifest = g_strdup_printf("[root]\n%s", manifest_content);
+        if (g_key_file_load_from_data(kf, dummy_manifest, -1, G_KEY_FILE_NONE, NULL)) {
+            apply_gsettings("org.gnome.desktop.interface", "gtk-theme", g_key_file_get_string(kf, "root", "gtk", NULL));
+            apply_gsettings("org.gnome.desktop.interface", "icon-theme", g_key_file_get_string(kf, "root", "icons", NULL));
+            apply_gsettings("org.gnome.desktop.interface", "cursor-theme", g_key_file_get_string(kf, "root", "cursor", NULL));
+            
+            char *wallpaper_uri = g_strdup_printf("file://%s/.local/share/backgrounds/restored_wallpaper.img", user_home);
+            apply_gsettings("org.gnome.desktop.background", "picture-uri", wallpaper_uri);
+            g_free(wallpaper_uri);
+        }
+        g_free(dummy_manifest);
+        g_key_file_free(kf);
+        g_free(manifest_content);
+    }
+
+    archive_read_close(a);
+    archive_read_free(a);
+    return res;
+}

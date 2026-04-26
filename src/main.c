@@ -15,10 +15,16 @@ int main(int argc, char *argv[]) {
     printf("Criando backup de teste em 'backup.tar.gz'...\n");
     Result res = create_gnome_backup("backup.tar.gz");
     
-    if (res.mask == SUCCESS) {
-        printf("Backup criado com sucesso!\n");
-    } else {
-        printf("Erro ao criar backup: Mask 0x%X\n", res.mask);
+    printf("Deseja testar a restauração agora? (s/n): ");
+    char choice;
+    if (scanf(" %c", &choice) == 1 && (choice == 's' || choice == 'S')) {
+        printf("Restaurando backup de 'backup.tar.gz'...\n");
+        res = restore_gnome_backup("backup.tar.gz");
+        if (res.mask == SUCCESS) {
+            printf("Restauração concluída com sucesso!\n");
+        } else {
+            printf("Erro na restauração: Mask 0x%X\n", res.mask);
+        }
     }
 
     return 0;
