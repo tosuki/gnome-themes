@@ -1,4 +1,5 @@
 #include <gio/gio.h>
+#include <string.h>
 #include "gnome_config.h"
 
 Result get_gnome_wallpaper(char **path) {
@@ -12,7 +13,6 @@ Result get_gnome_wallpaper(char **path) {
 
     *path = g_settings_get_string(settings, "picture-uri");
     
-    // O GNOME costuma retornar com o prefixo 'file://', vamos tratar isso se necessário no futuro
     if (*path == NULL || strlen(*path) == 0) {
         res.mask |= ERR_THEME_NOT_FOUND;
     }
@@ -63,5 +63,41 @@ Result get_gnome_preferences(char **color_scheme) {
     if (color_scheme) *color_scheme = g_settings_get_string(settings, "color-scheme");
     
     g_object_unref(settings);
+    return res;
+}
+
+Result find_asset_path(const char *theme_name, const char *theme_type, char **full_path) {
+    Result res = { .timestamp = (uint64_t)g_get_real_time(), .mask = SUCCESS, .reserved = 0 };
+    
+    const char *user_home = g_get_home_dir();
+    char *search_paths[4];
+    
+    if (g_strcmp0(theme_type, "icons") == 0) {
+        search_paths[0] = g_build_filename(user_home, ".local", "share", "icons", theme_name, NULL);
+        search_paths[1] = g_build_filename(user_home, ".icons", theme_name, NULL);
+        search_paths[2] = g_build_filename("/usr/share/icons", theme_name, NULL);
+        search_paths[3] = NULL;
+    } else {
+        search_paths[0] = g_build_filename(user_home, ".local", "share", "themes", theme_name, NULL);
+        search_paths[1] = g_build_filename(user_home, ".themes", theme_name, NULL);
+        search_paths[2] = g_build_filename("/usr/share/themes", theme_name, NULL);
+        search_paths[3] = NULL;
+    }
+
+    gboolean found = FALSE;
+    for (int i = 0; search_paths[i] != NULL; i++) {
+        if (g_file_test(search_paths[i], G_FILE_TEST_IS_DIR)) {
+            *full_path = g_strdup(search_paths[i]);
+            found = TRUE;
+            break;
+        }
+    }
+
+    for (int i = 0; search_paths[i] != NULL; i++) g_free(search_paths[i]);
+
+    if (!found) {
+        res.mask |= ERR_THEME_NOT_FOUND;
+    }
+
     return res;
 }

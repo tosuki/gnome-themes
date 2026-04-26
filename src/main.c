@@ -26,12 +26,31 @@ int main(int argc, char *argv[]) {
 
     if (res.mask == SUCCESS) {
         printf("Tema GTK: %s\n", gtk);
+        char *gtk_path = NULL;
+        if (find_asset_path(gtk, "themes", &gtk_path).mask == SUCCESS) {
+            printf("  - Caminho: %s\n", gtk_path);
+            g_free(gtk_path);
+        }
+
         printf("Tema Ícones: %s\n", icons);
+        char *icon_path = NULL;
+        if (find_asset_path(icons, "icons", &icon_path).mask == SUCCESS) {
+            printf("  - Caminho: %s\n", icon_path);
+            g_free(icon_path);
+        }
+
         printf("Tema Cursor: %s (%d)\n", cursor, cursor_size);
+        char *cursor_path = NULL;
+        if (find_asset_path(cursor, "icons", &cursor_path).mask == SUCCESS) {
+            printf("  - Caminho: %s\n", cursor_path);
+            g_free(cursor_path);
+        }
+
         g_free(gtk);
         g_free(icons);
         g_free(cursor);
-    } else {
+    }
+ else {
         printf("Erro ao detectar temas: Mask 0x%X\n", res.mask);
     }
 

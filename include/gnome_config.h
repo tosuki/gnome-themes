@@ -33,4 +33,14 @@ Result get_gnome_fonts(char **interface, char **document, char **monospace, char
  */
 Result get_gnome_preferences(char **color_scheme);
 
+/**
+ * @brief Localiza o caminho absoluto de um tema.
+ * 
+ * @param theme_name Nome do tema.
+ * @param theme_type Tipo (themes, icons).
+ * @param full_path Ponteiro para o caminho resultante.
+ * @return Result 
+ */
+Result find_asset_path(const char *theme_name, const char *theme_type, char **full_path);
+
 #endif // GNOME_CONFIG_H
