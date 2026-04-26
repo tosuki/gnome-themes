@@ -20,5 +20,20 @@ int main(int argc, char *argv[]) {
         printf("Erro ao detectar wallpaper: Mask 0x%X\n", res.mask);
     }
 
+    char *gtk = NULL, *icons = NULL, *cursor = NULL;
+    int cursor_size = 0;
+    res = get_gnome_themes(&gtk, &icons, &cursor, &cursor_size);
+
+    if (res.mask == SUCCESS) {
+        printf("Tema GTK: %s\n", gtk);
+        printf("Tema Ícones: %s\n", icons);
+        printf("Tema Cursor: %s (%d)\n", cursor, cursor_size);
+        g_free(gtk);
+        g_free(icons);
+        g_free(cursor);
+    } else {
+        printf("Erro ao detectar temas: Mask 0x%X\n", res.mask);
+    }
+
     return 0;
 }
